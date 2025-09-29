@@ -6,9 +6,10 @@ void setup(){
 }
 
 void draw(){
-    background(200);
+    background(255);
     drawGrid();
     gridNumpad();
+    drawNumpad();
     
     
     
@@ -38,4 +39,18 @@ void gridNumpad(){
         line(900+0, 200+cell_num*j, 900+cell_num*3, 200+cell_num*j);
         j += 1;
     }
+}
+
+void drawNumpad(){
+    textAlign(CENTER,CENTER);
+    textSize(30);
+    fill(0);
+    int numpadNum = 1;
+    for(int i = 0; i < 3; i++){
+      for(int j = 0; j < 3; j++){
+          text(numpadNum, (j*cell_num)+900+(cell_num/2), (i*cell_num)+(cell_num/2)+280);
+          numpadNum++;
+      }
+    }
+    text("<", 940+cell_num+cell_num, cell_num*3);
 }
