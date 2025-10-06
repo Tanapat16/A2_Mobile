@@ -119,6 +119,58 @@ void mousePressed() {
         println("Selected: row=" + selectedRow + ", col=" + selectedCol);
         return; 
     }
+    int nx = mouseX - 900;
+    int ny = mouseY - 300;
+
+    if(nx >= 0 && nx < cell_num*3 && ny >= 0 && ny < cell_num*3 && selectedRow != -1 && selectedCol != -1){
+        int colNum = nx / cell_num; 
+        int rowNum = ny / cell_num; 
+        int num = rowNum*3 + colNum + 1; 
+    
+        if(isValid(selectedRow, selectedCol, num)){
+            grid[selectedRow][selectedCol] = num;
+            println("Inserted: " + num + " at row=" + selectedRow + ", col=" + selectedCol);
+        } 
+        else {
+            println("Cannot insert " + num + " at row=" + selectedRow + ", col=" + selectedCol + " (duplicate!)");
+           }
+    }
+
+    int backX = 940 + cell_num + cell_num;
+    int backY = cell_num*3;
+    if(mouseX >= backX - 40 && mouseX <= backX + 40 && mouseY >= backY - 40 && mouseY <= backY + 40 && selectedRow != -1 && selectedCol != -1){
+        grid[selectedRow][selectedCol] = 0;
+        println("Deleted at row=" + selectedRow + ", col=" + selectedCol);
+    }
 
     
+}
+
+boolean isValid(int row, int col, int num){
+    int i,j;
+  
+    i = 0;
+    while(i < 9){
+        if(grid[row][i] == num) return false;
+        i++;
+    }
+  
+    i = 0;
+    while(i < 9){
+        if(grid[i][col] == num) return false;
+        i++;
+    }
+  
+    int startRow = (row/3)*3;
+    int startCol = (col/3)*3;
+    i = 0;
+    while(i < 3){
+        j = 0;
+        while(j < 3){
+            if(grid[startRow+i][startCol+j] == num) return false;
+            j++;
+        }
+        i++;
+    }
+    return true;
 }
