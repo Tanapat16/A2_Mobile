@@ -2,9 +2,10 @@ int[][] grid = new int[9][9];
 int cell_size = 80;
 int cell_num = 80;
 
+
 void setup(){
     size(1200, 800);
-    startingNumber();
+    loadGrid("dataNum.txt");
 }
 
 void draw(){
@@ -12,7 +13,7 @@ void draw(){
     drawGrid();
     gridNumpad();
     drawNumpad();
-    drawNumber();
+    
     
     
 }
@@ -30,54 +31,51 @@ void drawGrid(){
     }
 }
 
-void gridNumpad(){
+void gridNumpad() {
     int i = 0;
-    while(i<=3){
-        line(900+cell_num*i, 200+0, 900+cell_num*i, 200+cell_num*4);
-        i += 1;
+    while(i <= 3) {
+        line(900 + cell_num * i, 200, 900 + cell_num * i, 200 + cell_num * 4);
+        i++;
     }
+  
     int j = 0;
-    while(j<=4){
-        line(900+0, 200+cell_num*j, 900+cell_num*3, 200+cell_num*j);
-        j += 1;
+    while(j <= 4) {
+        line(900, 200 + cell_num * j, 900 + cell_num * 3, 200 + cell_num * j);
+        j++;
     }
 }
 
-void drawNumpad(){
-    textAlign(CENTER,CENTER);
+void drawNumpad() {
+    textAlign(CENTER, CENTER);
     textSize(30);
     fill(0);
+  
     int numpadNum = 1;
-    for(int i = 0; i < 3; i++){
-        for(int j = 0; j < 3; j++){
-            text(numpadNum, (j*cell_num)+900+(cell_num/2), (i*cell_num)+(cell_num/2)+280);
+    int i = 0;
+    while(i < 3) {
+        int j = 0;
+        while(j < 3) {
+            text(numpadNum, (j * cell_num) + 900 + (cell_num / 2), (i * cell_num) + (cell_num / 2) + 280);
             numpadNum++;
+            j++;
         }
+        i++;
     }
-    text("<", 940+cell_num+cell_num, cell_num*3);
+  
+    text("<", 940 + cell_num + cell_num, cell_num * 3);
 }
 
-void startingNumber() {
-  for (int row = 0; row < 9; row++) {
-    for (int col = 0; col < 9; col++) {
-      if (random(1) < 0.5) { 
-        grid[row][col] = int(random(1, 10)); 
-      } else {
-        grid[row][col] = 0;
-      }
+void loadGrid(String filename){
+    String[] lines = loadStrings(filename);
+    
+    int i = 0;
+    while(i < 9){
+        String[] num = split(lines[i], ' ');
+        int j = 0;
+        while(j < 9){
+            grid[i][j] = int(num[j]);
+            j++;
+        }
+        i++;
     }
-  }
-}
-
-void drawNumber() {
-  textAlign(CENTER, CENTER);
-  textSize(28);
-  fill(0);
-  for (int r = 0; r < 9; r++) {
-      for (int c = 0; c < 9; c++) {
-          if (grid[r][c] != 0) {
-              text(grid[r][c], c*cell_size+cell_size/2, r*cell_size+cell_size/2);
-          }
-      }
-  }
 }
