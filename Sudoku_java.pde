@@ -1,7 +1,8 @@
 int[][] grid = new int[9][9]; 
 int cell_size = 80;
 int cell_num = 80;
-
+int selectedRow = -1;
+int selectedCol = -1;
 
 void setup(){
     size(1200, 800);
@@ -14,7 +15,7 @@ void draw(){
     gridNumpad();
     drawNumpad();
     drawNumber();
-    
+    drawSelection();
     
     
 }
@@ -97,4 +98,27 @@ void drawNumber(){
         }
         i++;
     }
+}
+
+void drawSelection() {
+    if(selectedRow != -1 && selectedCol != -1){
+        noFill();
+        stroke(255, 0, 0); 
+        strokeWeight(3);
+        rect(selectedCol*cell_size, selectedRow*cell_size, cell_size, cell_size);
+        strokeWeight(1); 
+        stroke(0);
+    }
+}
+
+void mousePressed() {
+
+    if(mouseX >= 0 && mouseX < cell_size*9 && mouseY >= 0 && mouseY < cell_size*9){
+        selectedCol = mouseX / cell_size;
+        selectedRow = mouseY / cell_size;
+        println("Selected: row=" + selectedRow + ", col=" + selectedCol);
+        return; 
+    }
+
+    
 }
