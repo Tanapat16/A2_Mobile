@@ -13,6 +13,7 @@ void draw(){
     drawGrid();
     gridNumpad();
     drawNumpad();
+    drawNumber();
     
     
     
@@ -74,6 +75,24 @@ void loadGrid(String filename){
         int j = 0;
         while(j < 9){
             grid[i][j] = int(num[j]);
+            j++;
+        }
+        i++;
+    }
+}
+
+void drawNumber(){
+    textAlign(CENTER, CENTER);
+    textSize(32);
+    fill(0);
+    
+    int i = 0;
+    while(i < 9){
+        int j = 0;
+        while(j < 9){
+            if(grid[i][j] != 0){
+                text(grid[i][j], j*cell_size+cell_size/2, i*cell_size+cell_size/2);
+            }
             j++;
         }
         i++;
