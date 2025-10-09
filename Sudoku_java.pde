@@ -3,9 +3,13 @@ int cell_size = 80;
 int cell_num = 80;
 int selectedRow = -1;
 int selectedCol = -1;
+String message = "";
+int messageTime = 0;
+boolean[][] fixedCell = new boolean[9][9];
+
 
 void setup(){
-    size(1200, 800);
+    size(1200, 750);
     loadGrid("dataNum.txt");
 }
 
@@ -16,21 +20,30 @@ void draw(){
     drawNumpad();
     drawNumber();
     drawSelection();
-    
-    
+    drawMessage();
+
+
 }
 
 void drawGrid(){
+    stroke(0); 
     int i = 0;
-    while(i<=9){
-        line(cell_size*i, 0, cell_size*i, cell_size*9);
-        i += 1;
+    while(i <= 9){
+        if (i % 3 == 0) strokeWeight(3);
+        else strokeWeight(1);
+        line(cell_size * i, 0, cell_size * i, cell_size * 9);
+        i++;
     }
+  
     int j = 0;
-    while(j<=9){
-        line(0, cell_size*j, cell_size*9, cell_size*j);
-        j += 1;
+    while(j <= 9){
+        if (j % 3 == 0) strokeWeight(3);
+        else strokeWeight(1);
+        line(0, cell_size * j, cell_size * 9, cell_size * j);
+        j++;
     }
+  
+    strokeWeight(1); 
 }
 
 void gridNumpad() {
@@ -57,48 +70,57 @@ void drawNumpad() {
     while(i < 3) {
         int j = 0;
         while(j < 3) {
-            text(numpadNum, (j * cell_num) + 900 + (cell_num / 2), (i * cell_num) + (cell_num / 2) + 280);
+            text(numpadNum, j * cell_num + 900 + cell_num / 2, i * cell_num + cell_num / 2 + 280);
             numpadNum++;
             j++;
         }
         i++;
     }
-  
     text("<", 940 + cell_num + cell_num, cell_num * 3);
 }
 
 void loadGrid(String filename){
     String[] lines = loadStrings(filename);
-    
     int i = 0;
     while(i < 9){
         String[] num = split(lines[i], ' ');
         int j = 0;
         while(j < 9){
             grid[i][j] = int(num[j]);
-            j++;
-        }
-        i++;
-    }
-}
-
-void drawNumber(){
-    textAlign(CENTER, CENTER);
-    textSize(32);
-    fill(0);
-    
-    int i = 0;
-    while(i < 9){
-        int j = 0;
-        while(j < 9){
             if(grid[i][j] != 0){
-                text(grid[i][j], j*cell_size+cell_size/2, i*cell_size+cell_size/2);
+                fixedCell[i][j] = true; 
             }
             j++;
         }
         i++;
     }
 }
+
+
+void drawNumber(){
+    textAlign(CENTER, CENTER);
+    textSize(32);
+    int i = 0;
+    while(i < 9){
+        int j = 0;
+        while(j < 9){
+            if(grid[i][j] != 0){
+                if(fixedCell[i][j]) {
+                    fill(200, 200, 200); 
+                    rect(j * cell_size, i * cell_size, cell_size, cell_size);
+                    fill(0); 
+                }
+                else {
+                    fill(0, 0, 200);
+                }
+                text(grid[i][j], j * cell_size + cell_size / 2, i * cell_size + cell_size / 2);
+            }
+            j++;
+        }
+        i++;
+    }
+}
+
 
 void drawSelection() {
     if(selectedRow != -1 && selectedCol != -1){
@@ -132,7 +154,8 @@ void mousePressed() {
             println("Inserted: " + num + " at row=" + selectedRow + ", col=" + selectedCol);
         } 
         else {
-            println("Cannot insert " + num + " at row=" + selectedRow + ", col=" + selectedCol + " (duplicate!)");
+            warningMessage("Can not insert !!");
+            println("Can not insert " + num + " at row=" + selectedRow + ", col=" + selectedCol);
            }
     }
 
@@ -146,31 +169,42 @@ void mousePressed() {
     
 }
 
-boolean isValid(int row, int col, int num){
-    int i,j;
-  
-    i = 0;
-    while(i < 9){
-        if(grid[row][i] == num) return false;
+boolean isValid(int row, int col, int num) {
+    int i = 0;
+    while (i < 9) {
+        if (i != col && grid[row][i] == num) return false; 
+        if (i != row && grid[i][col] == num) return false;
         i++;
     }
-  
-    i = 0;
-    while(i < 9){
-        if(grid[i][col] == num) return false;
-        i++;
-    }
-  
-    int startRow = (row/3)*3;
-    int startCol = (col/3)*3;
-    i = 0;
-    while(i < 3){
-        j = 0;
-        while(j < 3){
-            if(grid[startRow+i][startCol+j] == num) return false;
-            j++;
+
+    int startRow = (row / 3) * 3;
+    int startCol = (col / 3) * 3;
+    int r = 0;
+    while (r < 3) {
+        int c = 0;
+        while (c < 3) {
+            if ((startRow + r != row || startCol + c != col) && grid[startRow + r][startCol + c] == num)
+                return false;
+            c++;
         }
-        i++;
+        r++;
     }
     return true;
+}
+
+void warningMessage(String msg) {
+      message = msg;
+      messageTime = millis(); 
+} 
+
+void drawMessage() {
+    if (message != "" && millis() - messageTime < 2000) { 
+        fill(255, 0, 0);
+        textSize(40);
+        textAlign(CENTER, CENTER);
+        text(message, width - 200, height - 650);
+    } 
+    else if (millis() - messageTime >= 2000) {
+        message = ""; 
+    }
 }
