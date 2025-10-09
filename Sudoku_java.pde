@@ -6,7 +6,7 @@ int selectedCol = -1;
 String message = "";
 int messageTime = 0;
 boolean[][] fixedCell = new boolean[9][9];
-
+boolean gameWon = false;
 
 void setup(){
     size(1200, 750);
@@ -21,7 +21,16 @@ void draw(){
     drawNumber();
     drawSelection();
     drawMessage();
+    if (isGameComplete()) {
+        gameWon = true;
+    }
 
+    if (gameWon) {
+        fill(0, 150, 0);
+        textSize(40);
+        textAlign(CENTER, CENTER);
+        text("YOU WON!!", width - 200, height - 650);
+    }
 
 }
 
@@ -135,6 +144,7 @@ void drawSelection() {
 
 void mousePressed() {
 
+    if (gameWon) return;
     if(mouseX >= 0 && mouseX < cell_size*9 && mouseY >= 0 && mouseY < cell_size*9){
         selectedCol = mouseX / cell_size;
         selectedRow = mouseY / cell_size;
@@ -207,4 +217,17 @@ void drawMessage() {
     else if (millis() - messageTime >= 2000) {
         message = ""; 
     }
+}
+
+boolean isGameComplete() {
+    int i = 0;
+    while (i < 9) {
+        int j = 0;
+        while (j < 9) {
+            if (grid[i][j] == 0 || !isValid(i, j, grid[i][j])) return false;
+            j++;
+        }
+        i++;
+    }
+    return true;
 }
